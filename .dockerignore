@@ -1,0 +1,17 @@
+# Ignore dependencies (We want Docker to install them fresh)
+node_modules
+npm-debug.log
+
+# Ignore git data
+.git
+.gitignore
+
+# Ignore docker config (The container doesn't need to know how to run itself)
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Ignore Documentation & Tests (Keep the production image small)
+README.md
+tests/
+coverage/
