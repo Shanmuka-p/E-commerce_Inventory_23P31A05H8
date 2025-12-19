@@ -1,5 +1,5 @@
 // test_logic.js
-const { sequelize, Product, Variant, Reservation } = require('./models'); 
+const { sequelize, Product, Variant, Reservation } = require('./models');
 const inventoryService = require('./services/InventoryService');
 
 async function runTest() {
@@ -18,7 +18,7 @@ async function runTest() {
 
         const variant = await Variant.create({
             sku: 'LAPT-001',
-            stockQuantity: 1000, 
+            stockQuantity: 100,
             ProductId: product.id
         });
 
@@ -35,7 +35,7 @@ async function runTest() {
             console.log(`✅ Reservation Success! Reservation ID: ${reserveResult.reservationId}`);
         } else {
             console.error('❌ Reservation Failed:', reserveResult.message);
-            return; 
+            return;
         }
 
         // Verify DB State

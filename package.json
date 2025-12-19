@@ -1,7 +1,7 @@
 {
-  "scripts": {
-    "test": "mocha --require chai/register-should test/**/*.js"
-  },
+ "scripts": {
+  "test": "node test_logic.js"
+},
   "dependencies": {
     "bullmq": "^5.66.0",
     "chai": "^4.3.4",
