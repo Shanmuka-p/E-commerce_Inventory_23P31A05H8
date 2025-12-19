@@ -3,16 +3,15 @@ const {sequelize} = require('../config/database');
 const Variant = require('./Variant');
 
 const Reservation = sequelize.define('Reservation', {
-  // Who is reserving it?
-  userId: { type: DataTypes.INTEGER, allowNull: true }, // Nullable for guest checkout
-  cartId: { type: DataTypes.STRING, allowNull: false }, // Session ID or similar
+  userId: { type: DataTypes.INTEGER, allowNull: true },
+  cartId: { type: DataTypes.STRING, allowNull: false },
 
   quantity: { type: DataTypes.INTEGER, allowNull: false },
 
-  // When does this reservation die?
+  price: { type: DataTypes.FLOAT, allowNull: false },
+
   expiresAt: { type: DataTypes.DATE, allowNull: false }
 }, {
-  // Index for the background job to find expired items quickly
   indexes: [{ fields: ['expiresAt'] }]
 });
 

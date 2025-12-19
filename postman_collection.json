@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "e8a1d2c3-4b5a-4f6e-9d8c-7b6a5e4d3c2b",
+		"name": "E-commerce Inventory API",
+		"description": "API testing suite for the E-commerce Inventory Management System. Covers Pricing, Inventory Reservations, and Atomic Checkout.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pricing Engine",
+			"item": [
+				{
+					"name": "Calculate Price (Standard)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/1/price?quantity=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1",
+								"price"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculate Price (Bulk + Gold Tier)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/1/price?quantity=15&tier=gold",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1",
+								"price"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "15"
+								},
+								{
+									"key": "tier",
+									"value": "gold"
+								}
+							]
+						},
+						"description": "Tests both bulk discount (>10) and the user tier discount (gold)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory & Cart",
+			"item": [
+				{
+					"name": "Add to Cart (Reserve Stock)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"variantId\": 1,\n    \"quantity\": 2,\n    \"userId\": 1001\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"add"
+							]
+						},
+						"description": "This call triggers the Pessimistic Lock in the database to reserve stock for 15 minutes."
+					},
+					"response": []
+				},
+				{
+					"name": "Add to Cart (Oversell Test)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"variantId\": 1,\n    \"quantity\": 9999,\n    \"userId\": 1002\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"add"
+							]
+						},
+						"description": "Should return a 409 Conflict if stock is insufficient."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Checkout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1001\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cart/checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"checkout"
+							]
+						},
+						"description": "Finalizes the transaction and permanently deducts stock from the inventory."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}

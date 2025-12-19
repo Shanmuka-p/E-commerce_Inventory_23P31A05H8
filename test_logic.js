@@ -1,5 +1,5 @@
 // test_logic.js
-const { sequelize, Product, Variant, Reservation } = require('./models'); // Adjust path if needed
+const { sequelize, Product, Variant, Reservation } = require('./models'); 
 const inventoryService = require('./services/InventoryService');
 
 async function runTest() {
@@ -18,8 +18,7 @@ async function runTest() {
 
         const variant = await Variant.create({
             sku: 'LAPT-001',
-            stockQuantity: 10, // We have 10 in stock
-            priceAdjustment: 0,
+            stockQuantity: 1000, 
             ProductId: product.id
         });
 
@@ -36,27 +35,14 @@ async function runTest() {
             console.log(`✅ Reservation Success! Reservation ID: ${reserveResult.reservationId}`);
         } else {
             console.error('❌ Reservation Failed:', reserveResult.message);
-            return; // Stop here if failed
+            return; 
         }
 
         // Verify DB State
         const reservations = await Reservation.findAll();
         console.log(`🔎 DB Check: Found ${reservations.length} reservation(s) in table.`);
-
-        // --- STEP 3: TEST OVERSOLD (Concurrency Check) ---
-        // console.log('\n--- 3. Testing Overselling (Should Fail) ---');
-        // // We have 10 stock. 2 are reserved. 8 available.
-        // // Let's try to buy 9.
-        // const failResult = await inventoryService.reserveStock(variant.id, 9, 102);
-
-        // if (!failResult.success) {
-        //     console.log('✅ Overselling Prevention Worked! System rejected the order.');
-        // } else {
-        //     console.error('❌ FATAL: System allowed overselling!');
-        // }
-
         // // --- STEP 4: TEST CHECKOUT ---
-        // console.log('\n--- 4. Testing Checkout ---');
+        console.log('\n--- 4. Testing Checkout ---');
         const checkoutResult = await inventoryService.checkout(userId);
 
         console.log('✅ Checkout Result:', checkoutResult);
@@ -64,11 +50,11 @@ async function runTest() {
         // Verify Final Stock
         const updatedVariant = await Variant.findByPk(variant.id);
         console.log(`\n🎉 Final Stock Check:`);
-        console.log(`   Initial Stock: 10`);
+        console.log(`   Initial Stock: 100`);
         console.log(`   Bought: ${qtyToBuy}`);
         console.log(`   Current Stock: ${updatedVariant.stockQuantity}`);
 
-        if (updatedVariant.stockQuantity === 8) {
+        if (updatedVariant.stockQuantity === 98) {
             console.log('✅ TEST PASSED: Stock was correctly deducted.');
         } else {
             console.error('❌ TEST FAILED: Stock calculation is wrong.');

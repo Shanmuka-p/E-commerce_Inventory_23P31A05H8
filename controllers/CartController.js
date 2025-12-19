@@ -8,13 +8,11 @@ exports.addToCart = async (req, res) => {
       return res.status(400).json({ error: 'Missing variantId or quantity' });
     }
 
-    // Call the complex "Locking" logic we wrote earlier
     const result = await inventoryService.reserveStock(variantId, quantity, userId);
 
     if (result.success) {
       res.status(201).json(result);
     } else {
-      // 409 Conflict is appropriate for "Stock not available"
       res.status(409).json(result); 
     }
 
@@ -27,7 +25,6 @@ exports.checkout = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    // Call the atomic checkout logic
     const result = await inventoryService.checkout(userId);
 
     res.json(result);
